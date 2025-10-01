@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>One-Page Site</title>
+  <meta name="description" content="A clean one-page site with an easy-to-swap background image." />
+  <meta name="theme-color" content="#0f172a" />
+
+  <style>
+    :root {
+      --bg-image: url('images/background.jpg');
+      --overlay: rgba(0,0,0,0.45);
+      --accent: #38bdf8;
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
+      color: var(--text);
+      background-image: var(--bg-image);
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      line-height: 1.5;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--overlay);
+      z-index: 0;
+    }
+
+    .site {
+      position: relative;
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: clamp(16px, 4vw, 48px);
+      isolation: isolate;
+    }
+
+    .card {
+      width: min(980px, 100%);
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: clamp(20px, 4vw, 40px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      margin-bottom: 10px;
+    }
+
+    .brand img {
+      width: 36px; height: 36px; object-fit: contain; border-radius: 8px;
+    }
+
+    p.lead {
+      margin: 0 0 24px 0;
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: var(--muted);
+      max-width: 62ch;
+    }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+
+    .btn {
+      --btn-bg: var(--accent);
+      --btn-fg: #0b1220;
+      appearance: none; border: 0; cursor: pointer;
+      background: var(--btn-bg); color: var(--btn-fg);
+      padding: 12px 18px; border-radius: 999px;
+      font-weight: 700; letter-spacing: 0.2px;
+      transition: transform 120ms ease, filter 120ms ease, background 200ms ease;
+    }
+    .btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn.secondary {
+      --btn-bg: rgba(248, 250, 252, 0.08);
+      --btn-fg: var(--text);
+      border: 1px solid rgba(248, 250, 252, 0.2);
+      backdrop-filter: blur(4px);
+    }
+
+    footer {
+      position: fixed; inset-inline: 0; bottom: 10px;
+      display: grid; place-items: center; z-index: 1; padding: 0 12px;
+    }
+    .footer-inner {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(15, 23, 42, 0.6); color: var(--muted);
+      border: 1px solid rgba(255,255,255,0.16); backdrop-filter: blur(6px);
+      border-radius: 999px; padding: 8px 12px; font-size: 14px;
+    }
+    .footer-inner input[type="file"] { display: none; }
+    .file-label { text-decoration: underline; cursor: pointer; }
+
+    .kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: rgba(248,250,252,0.12); border: 1px solid rgba(248,250,252,0.22);
+      padding: 2px 6px; border-radius: 6px; font-size: 12px; color: var(--muted);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .btn, * { transition: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="overlay" aria-hidden="true"></div>
+
+  <main class="site" role="main">
+    <section class="card" aria-label="Intro content">
+      <div class="brand">
+        <img src="images/logo.png" alt="Logo" onerror="this.style.display='none'" />
+        <span>YOUR BRAND</span>
+      </div>
+
+      <p class="lead">
+        A single, elegant page. The background can be swapped to any JPG/PNG in seconds. Keep your message sharp, and let the imagery do the heavy lifting.
+      </p>
+
+      <div class="actions">
+        <a class="btn" href="#contact">Contact</a>
+        <a class="btn secondary" href="#more">Learn More</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>Swap background:</span>
+      <label class="file-label" for="bgFile">Choose image</label>
+      <input id="bgFile" type="file" accept="image/*" />
+      <span class="kbd">Tip: drag & drop image onto the page</span>
+    </div>
+  </footer>
+
+  <script>
+    const fileInput = document.getElementById('bgFile');
+    fileInput?.addEventListener('change', (e) => {
+      const file = e.target.files?.[0];
+      if (file) setBackgroundFromFile(file);
+    });
+
+    window.addEventListener('dragover', (e) => { e.preventDefault(); });
+    window.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const file = e.dataTransfer?.files?.[0];
+      if (file && file.type.startsWith('image/')) setBackgroundFromFile(file);
+    });
+
+    function setBackgroundFromFile(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        document.body.style.backgroundImage = `url('${reader.result}')`;
+        try { sessionStorage.setItem('bg-data-url', reader.result); } catch {}
+      };
+      reader.readAsDataURL(file);
+    }
+
+    (function restoreSessionBg(){
+      try {
+        const dataUrl = sessionStorage.getItem('bg-data-url');
+        if (dataUrl) document.body.style.backgroundImage = `url('${dataUrl}')`;
+      } catch {}
+    })();
+
+    (function bgFromQuery(){
+      const params = new URLSearchParams(location.search);
+      const bg = params.get('bg');
+      if (bg) document.body.style.backgroundImage = `url('${bg}')`;
+    })();
+  </script>
+</body>
+</html>
