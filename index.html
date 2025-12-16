@@ -132,41 +132,6 @@
 
   </footer>
 
-  <script>
-    const fileInput = document.getElementById('bgFile');
-    fileInput?.addEventListener('change', (e) => {
-      const file = e.target.files?.[0];
-      if (file) setBackgroundFromFile(file);
-    });
 
-    window.addEventListener('dragover', (e) => { e.preventDefault(); });
-    window.addEventListener('drop', (e) => {
-      e.preventDefault();
-      const file = e.dataTransfer?.files?.[0];
-      if (file && file.type.startsWith('image/')) setBackgroundFromFile(file);
-    });
-
-    function setBackgroundFromFile(file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        document.body.style.backgroundImage = `url('${reader.result}')`;
-        try { sessionStorage.setItem('bg-data-url', reader.result); } catch {}
-      };
-      reader.readAsDataURL(file);
-    }
-
-    (function restoreSessionBg(){
-      try {
-        const dataUrl = sessionStorage.getItem('bg-data-url');
-        if (dataUrl) document.body.style.backgroundImage = `url('${dataUrl}')`;
-      } catch {}
-    })();
-
-    (function bgFromQuery(){
-      const params = new URLSearchParams(location.search);
-      const bg = params.get('bg');
-      if (bg) document.body.style.backgroundImage = `url('${bg}')`;
-    })();
-  </script>
 </body>
 </html>
