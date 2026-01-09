@@ -12,10 +12,10 @@
 
   <style>
     :root {
-      --bg-image: url('images/background.jpg');
+      --bg-image: url('assets/images/Carters.png');
       --overlay: rgba(0,0,0,0.45);
       --accent: #38bdf8;
-      --text: #f8fafc;
+      --text: #0A0A0A;
       --muted: #cbd5e1;
     }
 
@@ -27,7 +27,7 @@
       color: var(--text);
       background-image: var(--bg-image);
       background-size: cover;
-      background-position: center;
+      background-position: top center;
       background-repeat: no-repeat;
       background-attachment: scroll;
       line-height: 1.5;
@@ -129,49 +129,9 @@
  
 
   <footer>
-    <div class="footer-inner">
-      <span>Swap background:</span>
-      <label class="file-label" for="bgFile">Choose image</label>
-      <input id="bgFile" type="file" accept="image/*" />
-      <span class="kbd">Tip: drag & drop image onto the page</span>
-    </div>
+
   </footer>
 
-  <script>
-    const fileInput = document.getElementById('bgFile');
-    fileInput?.addEventListener('change', (e) => {
-      const file = e.target.files?.[0];
-      if (file) setBackgroundFromFile(file);
-    });
 
-    window.addEventListener('dragover', (e) => { e.preventDefault(); });
-    window.addEventListener('drop', (e) => {
-      e.preventDefault();
-      const file = e.dataTransfer?.files?.[0];
-      if (file && file.type.startsWith('image/')) setBackgroundFromFile(file);
-    });
-
-    function setBackgroundFromFile(file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        document.body.style.backgroundImage = `url('${reader.result}')`;
-        try { sessionStorage.setItem('bg-data-url', reader.result); } catch {}
-      };
-      reader.readAsDataURL(file);
-    }
-
-    (function restoreSessionBg(){
-      try {
-        const dataUrl = sessionStorage.getItem('bg-data-url');
-        if (dataUrl) document.body.style.backgroundImage = `url('${dataUrl}')`;
-      } catch {}
-    })();
-
-    (function bgFromQuery(){
-      const params = new URLSearchParams(location.search);
-      const bg = params.get('bg');
-      if (bg) document.body.style.backgroundImage = `url('${bg}')`;
-    })();
-  </script>
 </body>
 </html>
