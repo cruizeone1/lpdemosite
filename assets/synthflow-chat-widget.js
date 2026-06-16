@@ -106,6 +106,10 @@
       "max-width:85%;word-break:break-word;font-size:14px;}" +
       ".sf-bubble-agent{background:#e5e7eb;color:#111827;padding:10px 14px;border-radius:12px;" +
       "max-width:calc(85% - 42px);word-break:break-word;font-size:14px;}" +
+      ".sf-bubble-user .sf-msg-link{color:#fff;text-decoration:underline;word-break:break-all;}" +
+      ".sf-bubble-user .sf-msg-link:hover{filter:brightness(1.12);}" +
+      ".sf-bubble-agent .sf-msg-link{color:var(--sf-purple);text-decoration:underline;word-break:break-all;}" +
+      ".sf-bubble-agent .sf-msg-link:hover{filter:brightness(1.15);}" +
       ".sf-msg-meta{font-size:11px;color:#9ca3af;margin-top:4px;padding-inline:4px;}" +
       ".sf-msg-row.user .sf-msg-meta{text-align:right;padding-right:0;}" +
       ".sf-chat-input-wrap{border-top:1px solid #e5e7eb;padding:10px 12px;background:#fff;}" +
@@ -136,6 +140,33 @@
   }
   function svgBubble() {
     return '<svg class="sf-launcher-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8.5z"/></svg>';
+  }
+
+  /**
+   * Insert plain text into `container`, turning http(s) URLs into <a> elements.
+   * Only http/https matches are linked (no javascript: etc.). Opens in a new tab.
+   */
+  function appendLinkified(container, text) {
+    if (text == null || text === "") return;
+    var re = /\b(https?:\/\/[^\s<>"']+)/gi;
+    var last = 0;
+    var m;
+    while ((m = re.exec(text)) !== null) {
+      if (m.index > last) {
+        container.appendChild(document.createTextNode(text.slice(last, m.index)));
+      }
+      var raw = m[1];
+      var href = raw.replace(/[.,);:!?]+$/g, "");
+      var a = document.createElement("a");
+      a.href = href;
+      a.textContent = raw;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.className = "sf-msg-link";
+      container.appendChild(a);
+      last = m.index + m[0].length;
+    }
+    container.appendChild(document.createTextNode(text.slice(last)));
   }
 
   async function proxyRequest(payload) {
@@ -264,7 +295,9 @@
 
     function addUserBubble(text) {
       var row = el("div", { class: "sf-msg-row user" });
-      row.appendChild(el("div", { class: "sf-bubble-user" }, [text]));
+      var bubble = el("div", { class: "sf-bubble-user" });
+      appendLinkified(bubble, String(text));
+      row.appendChild(bubble);
       row.appendChild(
         el("div", { class: "sf-msg-meta" }, [
           "You · " + formatTime(new Date()),
@@ -280,7 +313,9 @@
       var av = el("div", { class: "sf-avatar" });
       av.innerHTML = svgDoc();
       wrap.appendChild(av);
-      wrap.appendChild(el("div", { class: "sf-bubble-agent" }, [text]));
+      var bubble = el("div", { class: "sf-bubble-agent" });
+      appendLinkified(bubble, String(text));
+      wrap.appendChild(bubble);
       row.appendChild(wrap);
       row.appendChild(
         el("div", { class: "sf-msg-meta" }, [
