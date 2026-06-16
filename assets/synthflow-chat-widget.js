@@ -20,13 +20,6 @@
   var PURPLE = "#4B2164";
   var TEAL_DOT = "#008080";
 
-  var QUICK_REPLIES = [
-    "Shop or Get Product Info",
-    "Payments and Billing",
-    "Help with an Order or Service",
-    "Something Else?",
-  ];
-
   function el(tag, attrs, children) {
     var node = document.createElement(tag);
     if (attrs) {
@@ -115,10 +108,6 @@
       "max-width:calc(85% - 42px);word-break:break-word;font-size:14px;}" +
       ".sf-msg-meta{font-size:11px;color:#9ca3af;margin-top:4px;padding-inline:4px;}" +
       ".sf-msg-row.user .sf-msg-meta{text-align:right;padding-right:0;}" +
-      ".sf-quick-replies{display:flex;flex-direction:column;align-items:flex-end;gap:8px;margin-top:8px;padding-right:2px;}" +
-      ".sf-quick-replies button{appearance:none;background:#fff;border:1px solid #d1d5db;color:#111827;" +
-      "padding:8px 14px;border-radius:999px;font-size:13px;cursor:pointer;text-align:right;max-width:100%;}" +
-      ".sf-quick-replies button:hover{background:#f9fafb;border-color:#9ca3af;}" +
       ".sf-chat-input-wrap{border-top:1px solid #e5e7eb;padding:10px 12px;background:#fff;}" +
       ".sf-chat-input-inner{display:flex;align-items:center;gap:8px;}" +
       ".sf-input-icon{background:transparent;border:0;padding:6px;cursor:pointer;color:#6b7280;border-radius:8px;}" +
@@ -212,13 +201,6 @@
 
     var messagesEl = el("div", { class: "sf-chat-messages", id: "sf-chat-messages" });
 
-    var quickWrap = el("div", { class: "sf-quick-replies", id: "sf-quick-replies" });
-    QUICK_REPLIES.forEach(function (label) {
-      quickWrap.appendChild(
-        el("button", { type: "button", "data-reply": label }, [label])
-      );
-    });
-
     var inputWrap = el("div", { class: "sf-chat-input-wrap" });
     var inputInner = el("div", { class: "sf-chat-input-inner" });
     var btnImg = el("button", {
@@ -250,7 +232,6 @@
 
     panel.appendChild(header);
     panel.appendChild(messagesEl);
-    panel.appendChild(quickWrap);
     panel.appendChild(inputWrap);
     panel.appendChild(statusEl);
 
@@ -401,13 +382,6 @@
     btnClear.addEventListener("click", function () {
       if (busy) return;
       startSession();
-    });
-
-    quickWrap.addEventListener("click", function (ev) {
-      var t = ev.target;
-      if (t && t.getAttribute && t.getAttribute("data-reply")) {
-        sendMessage(t.getAttribute("data-reply"));
-      }
     });
 
     function submitInput() {
