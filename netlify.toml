@@ -1,0 +1,7 @@
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/api/synthflow-chat"
+  to = "/.netlify/functions/synthflow-chat"
+  status = 200

@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- BEGIN Synthflow Monitor. -->
-<script src="https://fe.fine-tuner.ai/chat-embed.js" data-agent-id="88b8b323-cced-49a1-87c0-c7f8ff89c526"></script>
-<!-- END Synthflow Monitor. -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>One-Page Site</title>
@@ -126,12 +123,34 @@
 </head>
 
 <body>
- 
+  <div class="overlay" aria-hidden="true"></div>
+  <main class="site">
+    <div class="card">
+      <div class="brand">
+        <span>One-page demo</span>
+      </div>
+      <p class="lead">Custom Synthflow chat (purple widget). Use the <strong>Chat</strong> button — conversations call the Platform API via a small serverless proxy so your API key stays off the page.</p>
+      <div class="actions">
+        <button type="button" class="btn">Primary</button>
+        <button type="button" class="btn secondary">Secondary</button>
+      </div>
+    </div>
+  </main>
 
   <footer>
-
+    <div class="footer-inner">
+      <span>Cloudflare Pages: add <span class="kbd">SYNTHFLOW_API_KEY</span> under Settings → Variables (use <span class="kbd">functions/api/synthflow-chat.js</span>).</span>
+    </div>
   </footer>
 
-
+  <script>
+    window.__SYNTHFLOW_WIDGET__ = {
+      modelId: "88b8b323-cced-49a1-87c0-c7f8ff89c526",
+      agentDisplayName: "Sofia",
+      /** Cloudflare Pages Function at /api/synthflow-chat (see functions/api/) */
+      proxyUrl: "/api/synthflow-chat"
+    };
+  </script>
+  <script src="assets/synthflow-chat-widget.js" defer></script>
 </body>
 </html>
